@@ -6,8 +6,15 @@ import TheHeader from "@/components/layout/TheHeader.vue";
 import TheFooter from "@/components/layout/TheFooter.vue";
 import DataTable from "@/components/datatable/DataTable.vue";
 import ProductCreate from "./ProductCreate.vue";
+import { useRouter, useRoute } from "vue-router";
+import { useAuthStore } from "../../stores/auth";
+import Swal from "sweetalert2";
 
 const productsArr = ref([]);
+
+const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
 
 const fields = ref([
   { key: "name", label: "Name" },
@@ -15,6 +22,25 @@ const fields = ref([
   { key: "description", label: "Description" },
   { key: "price", label: "Price" },
 ]);
+
+async function getTransactions() {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    buttonsStyling: false,
+    customClass: {
+      confirmButton: "btn btn-danger",
+      cancelButton: "btn fw-bold btn-active-light-primary",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire("Deleted!", "Your file has been deleted.", "success");
+    }
+  });
+}
 
 onMounted(async () => {
   await axios
@@ -42,6 +68,66 @@ function refreshTable() {
     .catch((error) => {
       console.log(error);
     });
+}
+
+function goToProductEdit(id) {
+  router.push({
+    name: "product-edit",
+    params: { id },
+  });
+}
+
+async function deleteProduct(id) {
+  await Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    buttonsStyling: false,
+    customClass: {
+      confirmButton: "btn btn-danger",
+      cancelButton: "btn fw-bold btn-active-light-primary",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios
+        .delete("http://127.0.0.1:8000/api/product/" + id, {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        })
+        .then((res) => {
+          console.log(res);
+          let i = productsArr.value.map((data) => data.id).indexOf(id);
+          productsArr.value.splice(i, 1);
+          Swal.fire({
+            text: `You have deleted product ${id}!.`,
+            icon: "success",
+            showCancelButton: false,
+            confirmButtonText: "Ok",
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: "btn btn-danger",
+            },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  });
+
+  // await axios
+  //   .delete("http://127.0.0.1:8000/api/product/" + id, {
+  //     headers: { Authorization: `Bearer ${auth.token}` },
+  //   })
+  //   .then((res) => {
+  //     console.log(res);
+  //     let i = productsArr.value.map((data) => data.id).indexOf(id);
+  //     productsArr.value.splice(i, 1);
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
 }
 </script>
 
@@ -163,6 +249,8 @@ function refreshTable() {
                       :items="productsArr"
                       :action="true"
                       :checkBox="true"
+                      @edit="goToProductEdit"
+                      @delete="deleteProduct"
                     />
                   </div>
                 </div>

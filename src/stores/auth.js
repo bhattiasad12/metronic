@@ -25,7 +25,7 @@ export const useAuthStore = defineStore({
           console.log(response);
 
           localStorage.setItem("email", response.data.users.email);
-          localStorage.setItem("token", response.data.users.token);
+          localStorage.setItem("token", response.data.token);
           localStorage.setItem("id", response.data.users.id);
           localStorage.setItem("name", response.data.users.name);
 

@@ -53,14 +53,18 @@ function toggle() {
             <input class="form-check-input" type="checkbox" value="1" />
           </div>
         </td>
-        <td class="text-dark fw-bold text-hover-primary fs-6" v-for="key in displayedFieldKeys">{{ item[key] }}</td>
+        <td
+          class="text-dark fw-bold text-hover-primary fs-6"
+          v-for="key in displayedFieldKeys"
+        >
+          {{ item[key] }}
+        </td>
         <td v-if="action">
           <div class="d-flex justify-content-end flex-shrink-0">
-            <a
+            <!-- <a
               href="#"
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
             >
-              <!--begin::Svg Icon | path: icons/duotune/general/gen019.svg-->
               <span class="svg-icon svg-icon-3">
                 <svg
                   width="24"
@@ -80,10 +84,9 @@ function toggle() {
                   ></path>
                 </svg>
               </span>
-              <!--end::Svg Icon-->
-            </a>
+            </a> -->
             <a
-              href="#"
+              @click="$emit('edit', item.id)"
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
             >
               <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
@@ -109,7 +112,7 @@ function toggle() {
               <!--end::Svg Icon-->
             </a>
             <a
-              href="#"
+              @click="$emit('delete', item.id)"
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
             >
               <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->

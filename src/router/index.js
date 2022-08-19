@@ -1,4 +1,5 @@
 import ProductIndex from "../views/product/ProductIndex.vue";
+import ProductEdit from "../views/product/ProductEdit.vue";
 import SignIn from "../views/auth/SignIn.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "../stores/auth";
@@ -20,6 +21,13 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/productedit",
+      name: "product-edit",
+      component: ProductEdit,
+      props: true,
+      meta: { requiresAuth: false },
+    },
+    {
       path: "/about",
       name: "about",
       // route level code-splitting
@@ -28,6 +36,7 @@ const router = createRouter({
       // component: () => import("../views/AboutView.vue"),
     },
   ],
+  linkActiveClass: "active",
 });
 
 router.beforeEach(async (to) => {
